@@ -20,7 +20,7 @@ public class LoginView extends JFrame {
 
     public LoginView() {
         setTitle("Sunrise Dental Clinic - Staff & Admin Login");
-        setSize(480, 480);
+        setSize(460, 440);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -37,7 +37,7 @@ public class LoginView extends JFrame {
         // Center Card Panel
         JPanel card = UITheme.createCardPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setPreferredSize(new Dimension(380, 400));
+        card.setPreferredSize(new Dimension(380, 350));
 
         // Header Title & Logo Text
         JLabel lblClinicIcon = new JLabel("• SUNRISE DENTAL CLINIC •", JLabel.CENTER);
@@ -110,14 +110,6 @@ public class LoginView extends JFrame {
         card.add(btnLogin);
         card.add(Box.createRigidArea(new Dimension(0, 10)));
         card.add(buttonRow);
-        card.add(Box.createRigidArea(new Dimension(0, 15)));
-
-        // Role hints
-        JLabel lblHint = new JLabel("Default: admin / admin123 | staff1 / staff123", JLabel.CENTER);
-        lblHint.setFont(new Font("Segoe UI", Font.ITALIC, 11));
-        lblHint.setForeground(UITheme.TEXT_MUTED);
-        lblHint.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(lblHint);
 
         outerPanel.add(card);
         add(outerPanel, BorderLayout.CENTER);
