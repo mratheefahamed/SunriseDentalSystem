@@ -3,13 +3,14 @@ package com.sunrisedental.view;
 import com.sunrisedental.model.User;
 import com.sunrisedental.service.DentalService;
 import com.sunrisedental.service.DentalServiceImpl;
+import com.sunrisedental.util.UITheme;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
- * Login Interface for Sunrise Dental Clinic System.
- * Supports Admin and Staff authentication.
+ * Modern High-Contrast Login Interface for Sunrise Dental Clinic.
  */
 public class LoginView extends JFrame {
     private JTextField txtUsername;
@@ -18,79 +19,108 @@ public class LoginView extends JFrame {
     private final DentalService dentalService = new DentalServiceImpl();
 
     public LoginView() {
-        setTitle("Sunrise Dental Clinic - User Authentication");
-        setSize(460, 340);
+        setTitle("Sunrise Dental Clinic - Staff & Admin Login");
+        setSize(480, 480);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        getContentPane().setBackground(UITheme.BG_LIGHT);
+        setLayout(new BorderLayout());
         initUI();
     }
 
     private void initUI() {
-        JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(245, 247, 250));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // Outer Container
+        JPanel outerPanel = new JPanel(new GridBagLayout());
+        outerPanel.setBackground(UITheme.BG_LIGHT);
 
-        JLabel lblTitle = new JLabel("Sunrise Dental Clinic Login", JLabel.CENTER);
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        lblTitle.setForeground(new Color(25, 118, 210));
+        // Center Card Panel
+        JPanel card = UITheme.createCardPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setPreferredSize(new Dimension(380, 400));
 
-        JLabel lblSubtitle = new JLabel("Enter authorized Admin or Staff credentials", JLabel.CENTER);
-        lblSubtitle.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblSubtitle.setForeground(Color.GRAY);
+        // Header Title & Logo Text
+        JLabel lblClinicIcon = new JLabel("✦ SUNRISE DENTAL CLINIC ✦", JLabel.CENTER);
+        lblClinicIcon.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        lblClinicIcon.setForeground(UITheme.PRIMARY);
+        lblClinicIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
-        panel.add(lblTitle, gbc);
+        JLabel lblTitle = new JLabel("Welcome Back", JLabel.CENTER);
+        lblTitle.setFont(UITheme.FONT_HEADER_LARGE);
+        lblTitle.setForeground(UITheme.TEXT_MAIN);
+        lblTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        gbc.gridy = 1;
-        panel.add(lblSubtitle, gbc);
+        JLabel lblSubtitle = new JLabel("Sign in with your authorized credentials", JLabel.CENTER);
+        lblSubtitle.setFont(UITheme.FONT_SUBTITLE);
+        lblSubtitle.setForeground(UITheme.TEXT_MUTED);
+        lblSubtitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        gbc.gridwidth = 1;
-        gbc.gridx = 0; gbc.gridy = 2;
-        JLabel lblUser = new JLabel("Username:");
-        lblUser.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        panel.add(lblUser, gbc);
+        card.add(lblClinicIcon);
+        card.add(Box.createRigidArea(new Dimension(0, 6)));
+        card.add(lblTitle);
+        card.add(Box.createRigidArea(new Dimension(0, 4)));
+        card.add(lblSubtitle);
+        card.add(Box.createRigidArea(new Dimension(0, 24)));
 
-        txtUsername = new JTextField(16);
-        txtUsername.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        gbc.gridx = 1;
-        panel.add(txtUsername, gbc);
+        // Username Field
+        JLabel lblUser = new JLabel("Username");
+        lblUser.setFont(UITheme.FONT_LABEL);
+        lblUser.setForeground(UITheme.TEXT_MAIN);
+        lblUser.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        gbc.gridx = 0; gbc.gridy = 3;
-        JLabel lblPass = new JLabel("Password:");
-        lblPass.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        panel.add(lblPass, gbc);
+        txtUsername = new JTextField();
+        UITheme.styleTextField(txtUsername);
+        txtUsername.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        txtPassword = new JPasswordField(16);
-        txtPassword.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        gbc.gridx = 1;
-        panel.add(txtPassword, gbc);
+        card.add(lblUser);
+        card.add(Box.createRigidArea(new Dimension(0, 6)));
+        card.add(txtUsername);
+        card.add(Box.createRigidArea(new Dimension(0, 14)));
 
-        btnLogin = new JButton("Login");
-        btnLogin.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        btnLogin.setBackground(new Color(25, 118, 210));
-        btnLogin.setForeground(Color.WHITE);
+        // Password Field
+        JLabel lblPass = new JLabel("Password");
+        lblPass.setFont(UITheme.FONT_LABEL);
+        lblPass.setForeground(UITheme.TEXT_MAIN);
+        lblPass.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        btnClear = new JButton("Clear");
-        btnClear.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtPassword = new JPasswordField();
+        UITheme.styleTextField(txtPassword);
+        txtPassword.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        btnExit = new JButton("Exit");
-        btnExit.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        card.add(lblPass);
+        card.add(Box.createRigidArea(new Dimension(0, 6)));
+        card.add(txtPassword);
+        card.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        btnPanel.setOpaque(false);
-        btnPanel.add(btnLogin);
-        btnPanel.add(btnClear);
-        btnPanel.add(btnExit);
+        // Buttons
+        btnLogin = UITheme.createPrimaryButton("Sign In to Portal");
+        btnLogin.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
+        btnLogin.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
-        panel.add(btnPanel, gbc);
+        JPanel buttonRow = new JPanel(new GridLayout(1, 2, 10, 0));
+        buttonRow.setOpaque(false);
+        btnClear = UITheme.createSecondaryButton("Clear");
+        btnExit = UITheme.createSecondaryButton("Exit");
+        buttonRow.add(btnClear);
+        buttonRow.add(btnExit);
+        buttonRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 38));
 
-        add(panel);
+        card.add(btnLogin);
+        card.add(Box.createRigidArea(new Dimension(0, 10)));
+        card.add(buttonRow);
+        card.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        // Action Listeners
+        // Role hints
+        JLabel lblHint = new JLabel("Default: admin / admin123 | staff1 / staff123", JLabel.CENTER);
+        lblHint.setFont(new Font("Segoe UI", Font.ITALIC, 11));
+        lblHint.setForeground(UITheme.TEXT_MUTED);
+        lblHint.setAlignmentX(Component.CENTER_ALIGNMENT);
+        card.add(lblHint);
+
+        outerPanel.add(card);
+        add(outerPanel, BorderLayout.CENTER);
+
+        // Action Handlers
         btnLogin.addActionListener(e -> performLogin());
         btnClear.addActionListener(e -> {
             txtUsername.setText("");
@@ -120,7 +150,7 @@ public class LoginView extends JFrame {
                 txtPassword.setText("");
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Database Error during login: " + ex.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Database Connection Error: " + ex.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

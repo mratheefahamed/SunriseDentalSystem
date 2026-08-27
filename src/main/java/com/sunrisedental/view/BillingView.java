@@ -5,12 +5,14 @@ import com.sunrisedental.model.Appointment;
 import com.sunrisedental.model.Bill;
 import com.sunrisedental.service.DentalService;
 import com.sunrisedental.service.DentalServiceImpl;
+import com.sunrisedental.util.UITheme;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 /**
- * Interface to Calculate & Print Patient Treatment Bill / Receipt.
+ * Modern High-Contrast Billing & Receipt Generation Interface.
  */
 public class BillingView extends JFrame {
     private JTextField txtAppNo, txtConsultationFee, txtTreatmentFee, txtTotalAmount;
@@ -20,107 +22,154 @@ public class BillingView extends JFrame {
     private Appointment currentAppointment = null;
 
     public BillingView() {
-        setTitle("Calculate & Print Patient Bill - Sunrise Dental Clinic");
-        setSize(780, 560);
+        setTitle("Calculate & Print Bill - Sunrise Dental Clinic");
+        setSize(880, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        getContentPane().setBackground(UITheme.BG_LIGHT);
+        setLayout(new BorderLayout());
         initBillingUI();
     }
 
     private void initBillingUI() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(245, 247, 250));
+        // Top Header
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(15, 23, 42));
+        headerPanel.setPreferredSize(new Dimension(880, 65));
+        headerPanel.setBorder(new EmptyBorder(12, 25, 12, 25));
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(245, 124, 0));
-        JLabel lblHeader = new JLabel("Calculate & Generate Patient Receipt");
-        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblHeader.setForeground(Color.WHITE);
-        headerPanel.add(lblHeader);
+        JLabel lblTitle = new JLabel("Calculate & Generate Patient Receipt");
+        lblTitle.setFont(UITheme.FONT_HEADER_MED);
+        lblTitle.setForeground(Color.WHITE);
 
-        // Left Panel - Calculation Form
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createTitledBorder("Billing Details"));
-        formPanel.setBackground(new Color(245, 247, 250));
+        JLabel lblSub = new JLabel("Factory pattern automated treatment fee calculation & printable receipt");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblSub.setForeground(new Color(148, 163, 184));
+
+        JPanel titleBlock = new JPanel(new GridLayout(2, 1));
+        titleBlock.setOpaque(false);
+        titleBlock.add(lblTitle);
+        titleBlock.add(lblSub);
+
+        headerPanel.add(titleBlock, BorderLayout.WEST);
+
+        // Center Split Layout
+        JPanel centerPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        centerPanel.setBorder(new EmptyBorder(20, 25, 20, 25));
+        centerPanel.setBackground(UITheme.BG_LIGHT);
+
+        // Left Card - Calculation Form
+        JPanel formCard = UITheme.createCardPanel();
+        formCard.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        txtAppNo = new JTextField(10);
-        txtConsultationFee = new JTextField("2500.00", 10); // Standard consultation fee
-        txtTreatmentFee = new JTextField(10);
+        txtAppNo = new JTextField(8);
+        UITheme.styleTextField(txtAppNo);
+
+        btnFetch = UITheme.createPrimaryButton("Fetch APT");
+        btnFetch.setBorder(new EmptyBorder(6, 12, 6, 12));
+
+        txtConsultationFee = new JTextField("2500.00");
+        UITheme.styleTextField(txtConsultationFee);
+
+        txtTreatmentFee = new JTextField();
         txtTreatmentFee.setEditable(false);
-        txtTotalAmount = new JTextField(10);
+        txtTreatmentFee.setBackground(new Color(241, 245, 249));
+        UITheme.styleTextField(txtTreatmentFee);
+
+        txtTotalAmount = new JTextField();
         txtTotalAmount.setEditable(false);
+        txtTotalAmount.setBackground(new Color(254, 243, 199)); // Soft amber highlight
+        txtTotalAmount.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        txtTotalAmount.setForeground(new Color(180, 83, 9));
+        UITheme.styleTextField(txtTotalAmount);
 
-        btnFetch = new JButton("Fetch APT");
-        btnFetch.setBackground(new Color(245, 124, 0));
-        btnFetch.setForeground(Color.WHITE);
-
-        btnCalculate = new JButton("Calculate Total");
-        btnCalculate.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnCalculate = UITheme.createSuccessButton("Calculate Total Bill");
 
         gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(new JLabel("APT Number:"), gbc);
-        
-        JPanel fetchRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        formCard.add(createLabel("Appointment No:"), gbc);
+
+        JPanel fetchRow = new JPanel(new BorderLayout(8, 0));
         fetchRow.setOpaque(false);
-        fetchRow.add(txtAppNo);
-        fetchRow.add(btnFetch);
+        fetchRow.add(txtAppNo, BorderLayout.CENTER);
+        fetchRow.add(btnFetch, BorderLayout.EAST);
 
         gbc.gridx = 1;
-        formPanel.add(fetchRow, gbc);
+        formCard.add(fetchRow, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1;
-        formPanel.add(new JLabel("Consultation Fee (LKR):"), gbc);
+        formCard.add(createLabel("Consultation Fee (LKR):"), gbc);
         gbc.gridx = 1;
-        formPanel.add(txtConsultationFee, gbc);
+        formCard.add(txtConsultationFee, gbc);
 
         gbc.gridx = 0; gbc.gridy = 2;
-        formPanel.add(new JLabel("Treatment Fee (LKR):"), gbc);
+        formCard.add(createLabel("Treatment Fee (LKR):"), gbc);
         gbc.gridx = 1;
-        formPanel.add(txtTreatmentFee, gbc);
+        formCard.add(txtTreatmentFee, gbc);
 
         gbc.gridx = 0; gbc.gridy = 3;
-        formPanel.add(new JLabel("Total Amount (LKR):"), gbc);
+        formCard.add(createLabel("Total Amount (LKR):"), gbc);
         gbc.gridx = 1;
-        formPanel.add(txtTotalAmount, gbc);
+        formCard.add(txtTotalAmount, gbc);
 
         gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
-        formPanel.add(btnCalculate, gbc);
+        gbc.insets = new Insets(15, 8, 8, 8);
+        formCard.add(btnCalculate, gbc);
 
-        // Right Panel - Receipt Preview
-        JPanel receiptPanel = new JPanel(new BorderLayout());
-        receiptPanel.setBorder(BorderFactory.createTitledBorder("Printable Receipt Preview"));
+        // Right Card - Printable Invoice Receipt Preview
+        JPanel receiptCard = UITheme.createCardPanel();
+        receiptCard.setLayout(new BorderLayout());
+
+        JLabel lblReceiptHeader = new JLabel("Printable Invoice Preview", JLabel.LEFT);
+        lblReceiptHeader.setFont(UITheme.FONT_LABEL);
+        lblReceiptHeader.setForeground(UITheme.TEXT_MAIN);
+        lblReceiptHeader.setBorder(new EmptyBorder(0, 0, 10, 0));
+
         txtReceipt = new JTextArea();
-        txtReceipt.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        txtReceipt.setFont(UITheme.FONT_MONO);
+        txtReceipt.setForeground(Color.BLACK); // Jet black readable ink text
+        txtReceipt.setBackground(Color.WHITE);
         txtReceipt.setEditable(false);
-        receiptPanel.add(new JScrollPane(txtReceipt), BorderLayout.CENTER);
+        txtReceipt.setMargin(new Insets(12, 12, 12, 12));
 
-        JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
-        btnPrint = new JButton("Print / Save Receipt");
-        btnPrint.setBackground(new Color(46, 125, 50));
-        btnPrint.setForeground(Color.WHITE);
-        btnPrint.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        JScrollPane scrollReceipt = new JScrollPane(txtReceipt);
+        scrollReceipt.setBorder(BorderFactory.createLineBorder(UITheme.BORDER, 1));
 
-        btnClose = new JButton("Close");
-        btnRow.add(btnPrint);
-        btnRow.add(btnClose);
+        receiptCard.add(lblReceiptHeader, BorderLayout.NORTH);
+        receiptCard.add(scrollReceipt, BorderLayout.CENTER);
 
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, formPanel, receiptPanel);
-        splitPane.setDividerLocation(360);
+        centerPanel.add(formCard);
+        centerPanel.add(receiptCard);
 
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(splitPane, BorderLayout.CENTER);
-        mainPanel.add(btnRow, BorderLayout.SOUTH);
+        // Bottom Actions Bar
+        JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 12));
+        bottomBar.setBackground(Color.WHITE);
+        bottomBar.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, UITheme.BORDER));
 
-        add(mainPanel);
+        btnPrint = UITheme.createPrimaryButton("Print / Save Receipt");
+        btnClose = UITheme.createSecondaryButton("Close");
 
-        // Actions
+        bottomBar.add(btnPrint);
+        bottomBar.add(btnClose);
+
+        add(headerPanel, BorderLayout.NORTH);
+        add(centerPanel, BorderLayout.CENTER);
+        add(bottomBar, BorderLayout.SOUTH);
+
+        // Action Handlers
         btnFetch.addActionListener(e -> fetchAppointment());
         btnCalculate.addActionListener(e -> calculateTotal());
         btnPrint.addActionListener(e -> printReceipt());
         btnClose.addActionListener(e -> this.dispose());
+    }
+
+    private JLabel createLabel(String text) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(UITheme.FONT_LABEL);
+        lbl.setForeground(UITheme.TEXT_MAIN);
+        return lbl;
     }
 
     private void fetchAppointment() {
@@ -164,7 +213,7 @@ public class BillingView extends JFrame {
         StringBuilder sb = new StringBuilder();
         sb.append("=========================================\n");
         sb.append("       SUNRISE DENTAL CLINIC - COLOMBO    \n");
-        sb.append("           PATIENT PAYMENT RECEIPT        \n");
+        sb.append("           OFFICIAL PAYMENT RECEIPT       \n");
         sb.append("=========================================\n");
         sb.append("APT No       : ").append(currentAppointment.getAppointmentNo()).append("\n");
         sb.append("Patient Name : ").append(currentAppointment.getPatientName()).append("\n");
@@ -174,7 +223,7 @@ public class BillingView extends JFrame {
         sb.append("Date & Time  : ").append(currentAppointment.getAppointmentDate()).append(" ").append(currentAppointment.getAppointmentTime()).append("\n");
         sb.append("-----------------------------------------\n");
         sb.append(String.format("Consultation Fee : LKR %10.2f\n", consultationFee));
-        sb.append(String.format("Treatment Fee    : LKR %10.2f\n", treatmentFee));
+        sb.append(String.format("Treatment Base Fee: LKR %10.2f\n", treatmentFee));
         sb.append("-----------------------------------------\n");
         sb.append(String.format("TOTAL AMOUNT     : LKR %10.2f\n", total));
         sb.append("=========================================\n");
@@ -199,7 +248,7 @@ public class BillingView extends JFrame {
             boolean saved = dentalService.saveBill(bill);
 
             if (saved) {
-                txtReceipt.print(); // Triggers Swing printable receipt dialog
+                txtReceipt.print();
                 JOptionPane.showMessageDialog(this, "Receipt saved and printed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception ex) {

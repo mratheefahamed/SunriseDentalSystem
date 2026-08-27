@@ -5,15 +5,15 @@ import com.sunrisedental.model.User;
 import com.sunrisedental.service.DentalService;
 import com.sunrisedental.service.DentalServiceImpl;
 import com.sunrisedental.util.InputValidator;
+import com.sunrisedental.util.UITheme;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.time.LocalDate;
 
 /**
- * Appointment Registration Swing Form.
- * Collects patient details, dentist assignment, treatment type, date & time.
- * Enforces double-booking checks and input validation.
+ * Modern High-Contrast Appointment Registration Form.
  */
 public class RegisterAppointmentView extends JFrame {
     private JTextField txtAppNo, txtPatientName, txtAddress, txtContact, txtDate, txtTime;
@@ -24,40 +24,63 @@ public class RegisterAppointmentView extends JFrame {
 
     public RegisterAppointmentView(User user) {
         this.currentUser = user;
-        setTitle("Register New Patient Appointment - Sunrise Dental Clinic");
-        setSize(580, 520);
+        setTitle("Register Patient Appointment - Sunrise Dental Clinic");
+        setSize(650, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+        getContentPane().setBackground(UITheme.BG_LIGHT);
+        setLayout(new BorderLayout());
         initForm();
         loadNextAppointmentNo();
     }
 
     private void initForm() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(245, 247, 250));
+        // Top Header
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(15, 23, 42));
+        headerPanel.setPreferredSize(new Dimension(650, 65));
+        headerPanel.setBorder(new EmptyBorder(12, 25, 12, 25));
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(46, 125, 50));
-        JLabel lblHeader = new JLabel("Register New Patient Appointment");
-        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblHeader.setForeground(Color.WHITE);
-        headerPanel.add(lblHeader);
+        JLabel lblTitle = new JLabel("Register New Patient Appointment");
+        lblTitle.setFont(UITheme.FONT_HEADER_MED);
+        lblTitle.setForeground(Color.WHITE);
 
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
-        formPanel.setBackground(new Color(245, 247, 250));
+        JLabel lblSub = new JLabel("Automatic double-booking protection enabled");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblSub.setForeground(new Color(148, 163, 184));
+
+        JPanel titleBlock = new JPanel(new GridLayout(2, 1));
+        titleBlock.setOpaque(false);
+        titleBlock.add(lblTitle);
+        titleBlock.add(lblSub);
+
+        headerPanel.add(titleBlock, BorderLayout.WEST);
+
+        // Center Card Form
+        JPanel centerContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 20));
+        centerContainer.setBackground(UITheme.BG_LIGHT);
+
+        JPanel card = UITheme.createCardPanel();
+        card.setLayout(new GridBagLayout());
+        card.setPreferredSize(new Dimension(580, 420));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(6, 10, 6, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        txtAppNo = new JTextField(15);
+        txtAppNo = new JTextField();
         txtAppNo.setEditable(false);
-        txtAppNo.setBackground(new Color(235, 238, 242));
+        txtAppNo.setBackground(new Color(241, 245, 249));
+        UITheme.styleTextField(txtAppNo);
 
-        txtPatientName = new JTextField(15);
-        txtAddress = new JTextField(15);
-        txtContact = new JTextField(15);
+        txtPatientName = new JTextField();
+        UITheme.styleTextField(txtPatientName);
+
+        txtAddress = new JTextField();
+        UITheme.styleTextField(txtAddress);
+
+        txtContact = new JTextField();
+        UITheme.styleTextField(txtContact);
 
         cbDentist = new JComboBox<>(new String[]{
             "Dr. Nimal Perera (General & Cleaning)",
@@ -66,6 +89,7 @@ public class RegisterAppointmentView extends JFrame {
             "Dr. Aruni Jayawardena (Cosmetic Whitening)",
             "Dr. Mahesh Gunaratne (Tooth Extractions)"
         });
+        UITheme.styleComboBox(cbDentist);
 
         cbTreatment = new JComboBox<>(new String[]{
             "General Consultation & Cleaning",
@@ -75,51 +99,59 @@ public class RegisterAppointmentView extends JFrame {
             "Teeth Whitening",
             "Orthodontic Braces Adjustment"
         });
+        UITheme.styleComboBox(cbTreatment);
 
-        txtDate = new JTextField(LocalDate.now().toString()); // YYYY-MM-DD
-        txtTime = new JTextField("09:00"); // HH:mm
+        txtDate = new JTextField(LocalDate.now().toString());
+        UITheme.styleTextField(txtDate);
 
-        addFormField(formPanel, gbc, 0, "Appointment No:", txtAppNo);
-        addFormField(formPanel, gbc, 1, "Patient Name:", txtPatientName);
-        addFormField(formPanel, gbc, 2, "Address:", txtAddress);
-        addFormField(formPanel, gbc, 3, "Contact Number:", txtContact);
-        addFormField(formPanel, gbc, 4, "Dentist Name:", cbDentist);
-        addFormField(formPanel, gbc, 5, "Treatment Type:", cbTreatment);
-        addFormField(formPanel, gbc, 6, "Appointment Date (YYYY-MM-DD):", txtDate);
-        addFormField(formPanel, gbc, 7, "Appointment Time (HH:mm):", txtTime);
+        txtTime = new JTextField("09:00");
+        UITheme.styleTextField(txtTime);
 
-        JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        btnSave = new JButton("Save Appointment");
-        btnSave.setBackground(new Color(46, 125, 50));
-        btnSave.setForeground(Color.WHITE);
-        btnSave.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        addFormField(card, gbc, 0, "Appointment No:", txtAppNo);
+        addFormField(card, gbc, 1, "Patient Full Name:", txtPatientName);
+        addFormField(card, gbc, 2, "Address:", txtAddress);
+        addFormField(card, gbc, 3, "Contact Number (e.g. 0771234567):", txtContact);
+        addFormField(card, gbc, 4, "Assigned Dentist:", cbDentist);
+        addFormField(card, gbc, 5, "Treatment Type:", cbTreatment);
+        addFormField(card, gbc, 6, "Appointment Date (YYYY-MM-DD):", txtDate);
+        addFormField(card, gbc, 7, "Appointment Time (24hr HH:mm):", txtTime);
 
-        btnClear = new JButton("Clear");
-        btnClose = new JButton("Close");
+        centerContainer.add(card);
 
-        btnPanel.add(btnSave);
-        btnPanel.add(btnClear);
-        btnPanel.add(btnClose);
+        // Bottom Actions Panel
+        JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 12));
+        bottomBar.setBackground(Color.WHITE);
+        bottomBar.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, UITheme.BORDER));
 
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(formPanel, BorderLayout.CENTER);
-        mainPanel.add(btnPanel, BorderLayout.SOUTH);
+        btnSave = UITheme.createSuccessButton("Save Appointment");
+        btnClear = UITheme.createSecondaryButton("Clear Form");
+        btnClose = UITheme.createSecondaryButton("Close");
 
-        add(mainPanel);
+        bottomBar.add(btnSave);
+        bottomBar.add(btnClear);
+        bottomBar.add(btnClose);
 
-        // Actions
+        add(headerPanel, BorderLayout.NORTH);
+        add(centerContainer, BorderLayout.CENTER);
+        add(bottomBar, BorderLayout.SOUTH);
+
+        // Action Handlers
         btnSave.addActionListener(e -> saveAppointment());
         btnClear.addActionListener(e -> clearForm());
         btnClose.addActionListener(e -> this.dispose());
     }
 
     private void addFormField(JPanel panel, GridBagConstraints gbc, int row, String labelText, Component comp) {
-        gbc.gridx = 0; gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.gridy = row;
+        gbc.weightx = 0.35;
         JLabel lbl = new JLabel(labelText);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lbl.setFont(UITheme.FONT_LABEL);
+        lbl.setForeground(UITheme.TEXT_MAIN);
         panel.add(lbl, gbc);
 
         gbc.gridx = 1;
+        gbc.weightx = 0.65;
         panel.add(comp, gbc);
     }
 
@@ -141,7 +173,6 @@ public class RegisterAppointmentView extends JFrame {
         String date = txtDate.getText().trim();
         String time = txtTime.getText().trim();
 
-        // Validations
         if (patientName.isEmpty() || address.isEmpty() || contact.isEmpty() || date.isEmpty() || time.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all mandatory fields.", "Validation Warning", JOptionPane.WARNING_MESSAGE);
             return;
@@ -167,16 +198,16 @@ public class RegisterAppointmentView extends JFrame {
         try {
             boolean success = dentalService.registerAppointment(app);
             if (success) {
-                JOptionPane.showMessageDialog(this, "Appointment " + appNo + " registered successfully for patient " + patientName + "!", "Registration Success", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Appointment " + appNo + " registered successfully for patient " + patientName + "!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 clearForm();
                 loadNextAppointmentNo();
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to register appointment. Please check database connection.", "Database Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Failed to register appointment.", "Database Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (IllegalArgumentException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Double Booking Alert", JOptionPane.WARNING_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "System error: " + ex.getMessage(), "Execution Failure", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "System error: " + ex.getMessage(), "Execution Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

@@ -3,14 +3,15 @@ package com.sunrisedental.view;
 import com.sunrisedental.model.Appointment;
 import com.sunrisedental.service.DentalService;
 import com.sunrisedental.service.DentalServiceImpl;
+import com.sunrisedental.util.UITheme;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
 
 /**
- * Admin Reports & Financial Analytics Interface.
- * Value-addition report feature for clinic management.
+ * Modern High-Contrast Admin Financial & Analytics Report Interface.
  */
 public class ReportsView extends JFrame {
     private JLabel lblTotalRevenue, lblTotalAppointments;
@@ -19,88 +20,120 @@ public class ReportsView extends JFrame {
     private final DentalService dentalService = new DentalServiceImpl();
 
     public ReportsView() {
-        setTitle("Admin Financial & Clinic Analytics Reports - Sunrise Dental Clinic");
-        setSize(750, 520);
+        setTitle("Financial Reports & Analytics - Sunrise Dental Clinic");
+        setSize(850, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        getContentPane().setBackground(UITheme.BG_LIGHT);
+        setLayout(new BorderLayout());
         initReportsUI();
         loadAnalyticsData();
     }
 
     private void initReportsUI() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(245, 247, 250));
+        // Top Header
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(15, 23, 42));
+        headerPanel.setPreferredSize(new Dimension(850, 65));
+        headerPanel.setBorder(new EmptyBorder(12, 25, 12, 25));
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(123, 31, 162));
-        JLabel lblHeader = new JLabel("Clinic Management & Revenue Analytics Summary");
-        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblHeader.setForeground(Color.WHITE);
-        headerPanel.add(lblHeader);
+        JLabel lblTitle = new JLabel("Clinic Management & Revenue Analytics Summary");
+        lblTitle.setFont(UITheme.FONT_HEADER_MED);
+        lblTitle.setForeground(Color.WHITE);
+
+        JLabel lblSub = new JLabel("Real-time revenue calculation & appointment performance reporting");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblSub.setForeground(new Color(148, 163, 184));
+
+        JPanel titleBlock = new JPanel(new GridLayout(2, 1));
+        titleBlock.setOpaque(false);
+        titleBlock.add(lblTitle);
+        titleBlock.add(lblSub);
+
+        headerPanel.add(titleBlock, BorderLayout.WEST);
 
         // Stats Cards Panel
         JPanel statsPanel = new JPanel(new GridLayout(1, 2, 20, 0));
-        statsPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-        statsPanel.setBackground(new Color(245, 247, 250));
+        statsPanel.setBorder(new EmptyBorder(20, 25, 15, 25));
+        statsPanel.setBackground(UITheme.BG_LIGHT);
 
-        JPanel card1 = createStatCard("Total Accumulated Revenue", "LKR 0.00", new Color(123, 31, 162));
+        JPanel card1 = createStatCard("TOTAL BILLED REVENUE", "LKR 0.00", new Color(124, 58, 237));
         lblTotalRevenue = (JLabel) card1.getComponent(1);
 
-        JPanel card2 = createStatCard("Total Appointments Registered", "0 Appointments", new Color(2, 136, 209));
+        JPanel card2 = createStatCard("RECORDED APPOINTMENTS", "0 Visits", new Color(14, 116, 144));
         lblTotalAppointments = (JLabel) card2.getComponent(1);
 
         statsPanel.add(card1);
         statsPanel.add(card2);
 
-        // Report Text Panel
+        // Report Text Card
+        JPanel reportCardContainer = new JPanel(new BorderLayout());
+        reportCardContainer.setBackground(UITheme.BG_LIGHT);
+        reportCardContainer.setBorder(new EmptyBorder(0, 25, 15, 25));
+
+        JPanel reportCard = UITheme.createCardPanel();
+        reportCard.setLayout(new BorderLayout());
+
+        JLabel lblReportTitle = new JLabel("Treatment & Dentist Activity Log", JLabel.LEFT);
+        lblReportTitle.setFont(UITheme.FONT_LABEL);
+        lblReportTitle.setForeground(UITheme.TEXT_MAIN);
+        lblReportTitle.setBorder(new EmptyBorder(0, 0, 8, 0));
+
         txtSummaryReport = new JTextArea();
-        txtSummaryReport.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        txtSummaryReport.setFont(UITheme.FONT_MONO);
+        txtSummaryReport.setForeground(Color.BLACK); // Jet-black readable ink
+        txtSummaryReport.setBackground(Color.WHITE);
         txtSummaryReport.setEditable(false);
+        txtSummaryReport.setMargin(new Insets(10, 10, 10, 10));
+
         JScrollPane scrollPane = new JScrollPane(txtSummaryReport);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Daily Treatment & Dentist Breakdown Report"));
+        scrollPane.setBorder(BorderFactory.createLineBorder(UITheme.BORDER, 1));
 
-        JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
-        btnRefresh = new JButton("Refresh Analytics");
-        btnRefresh.setBackground(new Color(123, 31, 162));
-        btnRefresh.setForeground(Color.WHITE);
+        reportCard.add(lblReportTitle, BorderLayout.NORTH);
+        reportCard.add(scrollPane, BorderLayout.CENTER);
 
-        btnClose = new JButton("Close");
-        btnRow.add(btnRefresh);
-        btnRow.add(btnClose);
+        reportCardContainer.add(reportCard, BorderLayout.CENTER);
 
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        
+        // Bottom Actions Bar
+        JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
+        bottomBar.setBackground(Color.WHITE);
+        bottomBar.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, UITheme.BORDER));
+
+        btnRefresh = UITheme.createPrimaryButton("Refresh Analytics");
+        btnClose = UITheme.createSecondaryButton("Close");
+
+        bottomBar.add(btnRefresh);
+        bottomBar.add(btnClose);
+
         JPanel centerContainer = new JPanel(new BorderLayout());
         centerContainer.add(statsPanel, BorderLayout.NORTH);
-        centerContainer.add(scrollPane, BorderLayout.CENTER);
+        centerContainer.add(reportCardContainer, BorderLayout.CENTER);
 
-        mainPanel.add(centerContainer, BorderLayout.CENTER);
-        mainPanel.add(btnRow, BorderLayout.SOUTH);
+        add(headerPanel, BorderLayout.NORTH);
+        add(centerContainer, BorderLayout.CENTER);
+        add(bottomBar, BorderLayout.SOUTH);
 
-        add(mainPanel);
-
-        // Actions
+        // Action Handlers
         btnRefresh.addActionListener(e -> loadAnalyticsData());
         btnClose.addActionListener(e -> this.dispose());
     }
 
-    private JPanel createStatCard(String title, String initialValue, Color color) {
-        JPanel card = new JPanel(new GridLayout(2, 1));
-        card.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(color, 2),
-            BorderFactory.createEmptyBorder(10, 15, 10, 15)
-        ));
-        card.setBackground(Color.WHITE);
+    private JPanel createStatCard(String title, String initialValue, Color accentColor) {
+        JPanel card = UITheme.createCardPanel();
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
 
         JLabel lblTitle = new JLabel(title);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        lblTitle.setForeground(Color.GRAY);
+        lblTitle.setForeground(UITheme.TEXT_MUTED);
+        lblTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JLabel lblValue = new JLabel(initialValue);
-        lblValue.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblValue.setForeground(color);
+        lblValue.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblValue.setForeground(accentColor);
+        lblValue.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         card.add(lblTitle);
+        card.add(Box.createRigidArea(new Dimension(0, 6)));
         card.add(lblValue);
         return card;
     }
@@ -110,29 +143,29 @@ public class ReportsView extends JFrame {
             double revenue = dentalService.getTotalClinicRevenue();
             List<Appointment> list = dentalService.getAllAppointments();
 
-            lblTotalRevenue.setText(String.format("LKR %.2f", revenue));
-            lblTotalAppointments.setText(list.size() + " Appointments");
+            lblTotalRevenue.setText(String.format("LKR %,.2f", revenue));
+            lblTotalAppointments.setText(list.size() + " Visits");
 
             StringBuilder sb = new StringBuilder();
-            sb.append("=========================================================================\n");
-            sb.append("                 SUNRISE DENTAL CLINIC - MANAGEMENT REPORT               \n");
-            sb.append("=========================================================================\n\n");
-            sb.append(String.format("Total Recorded Appointments : %d\n", list.size()));
-            sb.append(String.format("Total Billed Clinic Revenue : LKR %.2f\n\n", revenue));
-            sb.append("Recent Appointments Breakdown:\n");
-            sb.append("-------------------------------------------------------------------------\n");
-            sb.append(String.format("%-10s | %-18s | %-20s | %-12s\n", "APT NO", "PATIENT NAME", "DENTIST NAME", "TREATMENT"));
-            sb.append("-------------------------------------------------------------------------\n");
+            sb.append("=====================================================================================\n");
+            sb.append("                       SUNRISE DENTAL CLINIC - EXECUTIVE REPORT                      \n");
+            sb.append("=====================================================================================\n\n");
+            sb.append(String.format("Total Recorded Appointments : %d visits\n", list.size()));
+            sb.append(String.format("Total Billed Clinic Revenue : LKR %,.2f\n\n", revenue));
+            sb.append("Recent Patient Appointments Log:\n");
+            sb.append("-------------------------------------------------------------------------------------\n");
+            sb.append(String.format("%-10s | %-20s | %-25s | %-15s\n", "APT NO", "PATIENT NAME", "DENTIST NAME", "TREATMENT"));
+            sb.append("-------------------------------------------------------------------------------------\n");
 
             for (Appointment app : list) {
-                sb.append(String.format("%-10s | %-18s | %-20s | %-12s\n",
+                sb.append(String.format("%-10s | %-20s | %-25s | %-15s\n",
                     app.getAppointmentNo(),
-                    truncate(app.getPatientName(), 18),
-                    truncate(app.getDentistName(), 20),
-                    truncate(app.getTreatmentType(), 12)
+                    truncate(app.getPatientName(), 20),
+                    truncate(app.getDentistName(), 25),
+                    truncate(app.getTreatmentType(), 15)
                 ));
             }
-            sb.append("=========================================================================\n");
+            sb.append("=====================================================================================\n");
 
             txtSummaryReport.setText(sb.toString());
         } catch (Exception ex) {

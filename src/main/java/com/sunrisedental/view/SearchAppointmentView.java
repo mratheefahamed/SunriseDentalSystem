@@ -3,14 +3,16 @@ package com.sunrisedental.view;
 import com.sunrisedental.model.Appointment;
 import com.sunrisedental.service.DentalService;
 import com.sunrisedental.service.DentalServiceImpl;
+import com.sunrisedental.util.UITheme;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
 /**
- * Interface to Search & Display Appointment Details by Appointment Number or List All.
+ * Modern High-Contrast Search & Display Appointment Interface.
  */
 public class SearchAppointmentView extends JFrame {
     private JTextField txtSearchAppNo;
@@ -20,47 +22,72 @@ public class SearchAppointmentView extends JFrame {
     private final DentalService dentalService = new DentalServiceImpl();
 
     public SearchAppointmentView() {
-        setTitle("Search & Display Appointment Details - Sunrise Dental Clinic");
-        setSize(880, 520);
+        setTitle("Search Appointments - Sunrise Dental Clinic");
+        setSize(950, 580);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        getContentPane().setBackground(UITheme.BG_LIGHT);
+        setLayout(new BorderLayout());
         initSearchUI();
         loadAllAppointments();
     }
 
     private void initSearchUI() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(245, 247, 250));
+        // Top Header
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(15, 23, 42));
+        headerPanel.setPreferredSize(new Dimension(950, 65));
+        headerPanel.setBorder(new EmptyBorder(12, 25, 12, 25));
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(2, 136, 209));
-        JLabel lblHeader = new JLabel("Search & View Patient Appointment Details");
-        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblHeader.setForeground(Color.WHITE);
-        headerPanel.add(lblHeader);
+        JLabel lblTitle = new JLabel("Search & Display Appointment Directory");
+        lblTitle.setFont(UITheme.FONT_HEADER_MED);
+        lblTitle.setForeground(Color.WHITE);
 
-        JPanel searchBarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        searchBarPanel.setBackground(new Color(245, 247, 250));
+        JLabel lblSub = new JLabel("Query appointments by unique Appointment ID or browse all entries");
+        lblSub.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        lblSub.setForeground(new Color(148, 163, 184));
 
-        JLabel lblSearch = new JLabel("Appointment No:");
-        lblSearch.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        txtSearchAppNo = new JTextField(12);
+        JPanel titleBlock = new JPanel(new GridLayout(2, 1));
+        titleBlock.setOpaque(false);
+        titleBlock.add(lblTitle);
+        titleBlock.add(lblSub);
 
-        btnSearch = new JButton("Search Appointment");
-        btnSearch.setBackground(new Color(2, 136, 209));
-        btnSearch.setForeground(Color.WHITE);
-        btnSearch.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        headerPanel.add(titleBlock, BorderLayout.WEST);
 
-        btnLoadAll = new JButton("Show All");
-        btnClose = new JButton("Close");
+        // Search Bar Card Panel
+        JPanel searchCard = UITheme.createCardPanel();
+        searchCard.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 6));
 
-        searchBarPanel.add(lblSearch);
-        searchBarPanel.add(txtSearchAppNo);
-        searchBarPanel.add(btnSearch);
-        searchBarPanel.add(btnLoadAll);
-        searchBarPanel.add(btnClose);
+        JLabel lblSearch = new JLabel("Enter Appointment No:");
+        lblSearch.setFont(UITheme.FONT_LABEL);
+        lblSearch.setForeground(UITheme.TEXT_MAIN);
 
-        // Table Setup
+        txtSearchAppNo = new JTextField(14);
+        UITheme.styleTextField(txtSearchAppNo);
+
+        btnSearch = UITheme.createPrimaryButton("Search Appointment");
+        btnLoadAll = UITheme.createSecondaryButton("Show All Records");
+
+        searchCard.add(lblSearch);
+        searchCard.add(txtSearchAppNo);
+        searchCard.add(btnSearch);
+        searchCard.add(btnLoadAll);
+
+        JPanel topContainer = new JPanel(new BorderLayout());
+        topContainer.add(headerPanel, BorderLayout.NORTH);
+        
+        JPanel searchContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 15));
+        searchContainer.setBackground(UITheme.BG_LIGHT);
+        searchCard.setPreferredSize(new Dimension(900, 65));
+        searchContainer.add(searchCard);
+        
+        topContainer.add(searchContainer, BorderLayout.SOUTH);
+
+        // Center Table Card
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.setBackground(UITheme.BG_LIGHT);
+        tableContainer.setBorder(new EmptyBorder(0, 25, 15, 25));
+
         String[] columnNames = {"APT No", "Patient Name", "Address", "Contact", "Dentist", "Treatment", "Date", "Time", "Status"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -70,24 +97,25 @@ public class SearchAppointmentView extends JFrame {
         };
 
         tableAppointments = new JTable(tableModel);
-        tableAppointments.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        tableAppointments.setRowHeight(24);
-        tableAppointments.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
-        tableAppointments.getTableHeader().setBackground(new Color(225, 245, 254));
+        UITheme.styleTable(tableAppointments);
 
         JScrollPane scrollPane = new JScrollPane(tableAppointments);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        scrollPane.setBorder(BorderFactory.createLineBorder(UITheme.BORDER, 1));
+        scrollPane.getViewport().setBackground(Color.WHITE);
 
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        
-        JPanel topContainer = new JPanel(new BorderLayout());
-        topContainer.add(headerPanel, BorderLayout.NORTH);
-        topContainer.add(searchBarPanel, BorderLayout.SOUTH);
-        
-        mainPanel.add(topContainer, BorderLayout.NORTH);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
 
-        add(mainPanel);
+        // Bottom Bar
+        JPanel bottomBar = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
+        bottomBar.setBackground(Color.WHITE);
+        bottomBar.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, UITheme.BORDER));
+
+        btnClose = UITheme.createSecondaryButton("Close");
+        bottomBar.add(btnClose);
+
+        add(topContainer, BorderLayout.NORTH);
+        add(tableContainer, BorderLayout.CENTER);
+        add(bottomBar, BorderLayout.SOUTH);
 
         // Actions
         btnSearch.addActionListener(e -> searchAppointment());
