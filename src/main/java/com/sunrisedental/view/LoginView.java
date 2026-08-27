@@ -40,7 +40,7 @@ public class LoginView extends JFrame {
         card.setPreferredSize(new Dimension(380, 400));
 
         // Header Title & Logo Text
-        JLabel lblClinicIcon = new JLabel("SUNRISE DENTAL CLINIC - COLOMBO", JLabel.CENTER);
+        JLabel lblClinicIcon = new JLabel("• SUNRISE DENTAL CLINIC •", JLabel.CENTER);
         lblClinicIcon.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblClinicIcon.setForeground(UITheme.PRIMARY);
         lblClinicIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
