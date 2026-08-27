@@ -40,7 +40,7 @@ public class LoginView extends JFrame {
         card.setPreferredSize(new Dimension(380, 400));
 
         // Header Title & Logo Text
-        JLabel lblClinicIcon = new JLabel("✦ SUNRISE DENTAL CLINIC ✦", JLabel.CENTER);
+        JLabel lblClinicIcon = new JLabel("SUNRISE DENTAL CLINIC - COLOMBO", JLabel.CENTER);
         lblClinicIcon.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblClinicIcon.setForeground(UITheme.PRIMARY);
         lblClinicIcon.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -62,13 +62,14 @@ public class LoginView extends JFrame {
         card.add(lblSubtitle);
         card.add(Box.createRigidArea(new Dimension(0, 24)));
 
-        // Username Field
-        JLabel lblUser = new JLabel("Username");
+        // Username Field (Centered)
+        JLabel lblUser = new JLabel("Username", JLabel.CENTER);
         lblUser.setFont(UITheme.FONT_LABEL);
         lblUser.setForeground(UITheme.TEXT_MAIN);
-        lblUser.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblUser.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         txtUsername = new JTextField();
+        txtUsername.setHorizontalAlignment(JTextField.CENTER);
         UITheme.styleTextField(txtUsername);
         txtUsername.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
@@ -77,13 +78,14 @@ public class LoginView extends JFrame {
         card.add(txtUsername);
         card.add(Box.createRigidArea(new Dimension(0, 14)));
 
-        // Password Field
-        JLabel lblPass = new JLabel("Password");
+        // Password Field (Centered)
+        JLabel lblPass = new JLabel("Password", JLabel.CENTER);
         lblPass.setFont(UITheme.FONT_LABEL);
         lblPass.setForeground(UITheme.TEXT_MAIN);
-        lblPass.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblPass.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         txtPassword = new JPasswordField();
+        txtPassword.setHorizontalAlignment(JTextField.CENTER);
         UITheme.styleTextField(txtPassword);
         txtPassword.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
