@@ -23,7 +23,7 @@ public class BillingView extends JFrame {
 
     public BillingView() {
         setTitle("Calculate & Print Bill - Sunrise Dental Clinic");
-        setSize(880, 600);
+        setSize(950, 620);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(UITheme.BG_LIGHT);
@@ -35,7 +35,7 @@ public class BillingView extends JFrame {
         // Top Header
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(15, 23, 42));
-        headerPanel.setPreferredSize(new Dimension(880, 65));
+        headerPanel.setPreferredSize(new Dimension(950, 65));
         headerPanel.setBorder(new EmptyBorder(12, 25, 12, 25));
 
         JLabel lblTitle = new JLabel("Calculate & Generate Patient Receipt");
@@ -62,22 +62,26 @@ public class BillingView extends JFrame {
         JPanel formCard = UITheme.createCardPanel();
         formCard.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(10, 8, 10, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        txtAppNo = new JTextField(8);
+        txtAppNo = new JTextField();
         UITheme.styleTextField(txtAppNo);
+        txtAppNo.setPreferredSize(new Dimension(130, 38));
 
         btnFetch = UITheme.createPrimaryButton("Fetch APT");
-        btnFetch.setBorder(new EmptyBorder(6, 12, 6, 12));
+        btnFetch.setPreferredSize(new Dimension(110, 38));
+        btnFetch.setBorder(new EmptyBorder(6, 10, 6, 10));
 
         txtConsultationFee = new JTextField("2500.00");
         UITheme.styleTextField(txtConsultationFee);
+        txtConsultationFee.setPreferredSize(new Dimension(240, 38));
 
         txtTreatmentFee = new JTextField();
         txtTreatmentFee.setEditable(false);
         txtTreatmentFee.setBackground(new Color(241, 245, 249));
         UITheme.styleTextField(txtTreatmentFee);
+        txtTreatmentFee.setPreferredSize(new Dimension(240, 38));
 
         txtTotalAmount = new JTextField();
         txtTotalAmount.setEditable(false);
@@ -85,10 +89,13 @@ public class BillingView extends JFrame {
         txtTotalAmount.setFont(new Font("Segoe UI", Font.BOLD, 15));
         txtTotalAmount.setForeground(new Color(180, 83, 9));
         UITheme.styleTextField(txtTotalAmount);
+        txtTotalAmount.setPreferredSize(new Dimension(240, 38));
 
         btnCalculate = UITheme.createSuccessButton("Calculate Total Bill");
+        btnCalculate.setPreferredSize(new Dimension(240, 42));
 
-        gbc.gridx = 0; gbc.gridy = 0;
+        // Row 0: Appointment No + Fetch Button
+        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0.38;
         formCard.add(createLabel("Appointment No:"), gbc);
 
         JPanel fetchRow = new JPanel(new BorderLayout(8, 0));
@@ -96,26 +103,30 @@ public class BillingView extends JFrame {
         fetchRow.add(txtAppNo, BorderLayout.CENTER);
         fetchRow.add(btnFetch, BorderLayout.EAST);
 
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.weightx = 0.62;
         formCard.add(fetchRow, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1;
+        // Row 1: Consultation Fee
+        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0.38;
         formCard.add(createLabel("Consultation Fee (LKR):"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.weightx = 0.62;
         formCard.add(txtConsultationFee, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2;
+        // Row 2: Treatment Fee
+        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0.38;
         formCard.add(createLabel("Treatment Fee (LKR):"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.weightx = 0.62;
         formCard.add(txtTreatmentFee, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 3;
+        // Row 3: Total Amount
+        gbc.gridx = 0; gbc.gridy = 3; gbc.weightx = 0.38;
         formCard.add(createLabel("Total Amount (LKR):"), gbc);
-        gbc.gridx = 1;
+        gbc.gridx = 1; gbc.weightx = 0.62;
         formCard.add(txtTotalAmount, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2;
-        gbc.insets = new Insets(15, 8, 8, 8);
+        // Row 4: Calculate Button
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 2; gbc.weightx = 1.0;
+        gbc.insets = new Insets(18, 8, 8, 8);
         formCard.add(btnCalculate, gbc);
 
         // Right Card - Printable Invoice Receipt Preview
