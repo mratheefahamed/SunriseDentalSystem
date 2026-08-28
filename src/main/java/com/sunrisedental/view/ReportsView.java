@@ -57,11 +57,18 @@ public class ReportsView extends JFrame {
         statsPanel.setBorder(new EmptyBorder(20, 25, 15, 25));
         statsPanel.setBackground(UITheme.BG_LIGHT);
 
-        JPanel card1 = createStatCard("TOTAL BILLED REVENUE", "LKR 0.00", new Color(124, 58, 237));
-        lblTotalRevenue = (JLabel) card1.getComponent(1);
+        lblTotalRevenue = new JLabel("LKR 0.00");
+        lblTotalRevenue.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTotalRevenue.setForeground(new Color(124, 58, 237));
+        lblTotalRevenue.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JPanel card2 = createStatCard("RECORDED APPOINTMENTS", "0 Visits", new Color(14, 116, 144));
-        lblTotalAppointments = (JLabel) card2.getComponent(1);
+        lblTotalAppointments = new JLabel("0 Visits");
+        lblTotalAppointments.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTotalAppointments.setForeground(new Color(14, 116, 144));
+        lblTotalAppointments.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JPanel card1 = createStatCard("TOTAL BILLED REVENUE", lblTotalRevenue);
+        JPanel card2 = createStatCard("RECORDED APPOINTMENTS", lblTotalAppointments);
 
         statsPanel.add(card1);
         statsPanel.add(card2);
@@ -118,7 +125,7 @@ public class ReportsView extends JFrame {
         btnClose.addActionListener(e -> this.dispose());
     }
 
-    private JPanel createStatCard(String title, String initialValue, Color accentColor) {
+    private JPanel createStatCard(String title, JLabel lblValue) {
         JPanel card = UITheme.createCardPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
 
@@ -126,11 +133,6 @@ public class ReportsView extends JFrame {
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 12));
         lblTitle.setForeground(UITheme.TEXT_MUTED);
         lblTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JLabel lblValue = new JLabel(initialValue);
-        lblValue.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        lblValue.setForeground(accentColor);
-        lblValue.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         card.add(lblTitle);
         card.add(Box.createRigidArea(new Dimension(0, 6)));

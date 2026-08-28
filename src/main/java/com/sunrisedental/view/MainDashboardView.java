@@ -75,11 +75,9 @@ public class MainDashboardView extends JFrame {
         JButton btnHelp = createActionCard("5. Help & Manual", "Operating instructions for clinic staff", new Color(13, 148, 136), "❓");
         JButton btnExitApp = createActionCard("6. Exit System", "Safely close and terminate the session", UITheme.DANGER, "🚪");
 
-        // Role-based Access Rules
+        // Role-based Access Hint
         if (!"ADMIN".equalsIgnoreCase(currentUser.getRole())) {
-            btnReports.setEnabled(false);
-            btnReports.setBackground(new Color(241, 245, 249));
-            btnReports.setToolTipText("Admin access required for financial analytics.");
+            btnReports.setToolTipText("Administrator privileges required for financial reports.");
         }
 
         gridPanel.add(btnRegister);
@@ -111,7 +109,16 @@ public class MainDashboardView extends JFrame {
         btnRegister.addActionListener(e -> new RegisterAppointmentView(currentUser).setVisible(true));
         btnSearch.addActionListener(e -> new SearchAppointmentView().setVisible(true));
         btnBilling.addActionListener(e -> new BillingView().setVisible(true));
-        btnReports.addActionListener(e -> new ReportsView().setVisible(true));
+        btnReports.addActionListener(e -> {
+            if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+                new ReportsView().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Administrator Privileges Required!\n\nFinancial & Revenue Reports are restricted to Admin accounts.\nPlease log in with an Admin account (admin / admin123) to view clinic revenue.",
+                    "Admin Access Required",
+                    JOptionPane.WARNING_MESSAGE);
+            }
+        });
         btnHelp.addActionListener(e -> new HelpView().setVisible(true));
         btnLogoutTop.addActionListener(e -> handleLogout());
         btnExitApp.addActionListener(e -> handleExit());
